@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+</head>
+<body>
+
+    <script>
+    // mainProxy is needed since I'm calling the source code API from the browser in this demo, but you should take it server-side as well as the API key for security
+
+    let mainAPIProxy = `https://stage-api.whitelabelmd.com/client/site/11/amin-proxy`
+    let apiKey = "80ced31a80b7e11a46a98a9d6d942cd5"
+    let form = `240897547218064`
+
+    // get the form source code. This is so useful because you will always get the latest form source code
+    let formSourceCodeApi = `https://forms.whitelabelmd.com/API/form/${form}/source?apiKey=${apiKey}`
+
+    jQuery.ajax({
+    	url: mainAPIProxy,
+    	crossDomain: true,
+    	type: 'GET',
+    	data: {
+    		"user": "eric-postman",
+    		"site_key": "amin-dev^demo995",
+    		"version": "",
+    		"url": formSourceCodeApi,
+    	}
+    }).done(function(response) {
+
+    	let parsedJsonRespose = JSON.parse(response.message)
+    	let formSourceCode = parsedJsonRespose.content
+
+    	// create an HTML element and excute the form source code directly in it
+    	let formElement = document.createElement('div');
+    	formElement.innerHTML = formSourceCode;
+    	document.body.appendChild(formElement);
+
+
+    	// declare and manipulate the tracking code field
+
+    	let trackingField = document.querySelector("[name*='tracking_unid']")
+    	trackingField.value = "HELLO FROM THE OTHER SIDE"
+
+
+    })
+    </script>
+
+</body>
+</html>
